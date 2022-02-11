@@ -1,0 +1,8 @@
+.token.comment,
+.token.selector,
+.token.punctuation,
+.token.property,
+.token.function {
+  color: #000;
+}
+
