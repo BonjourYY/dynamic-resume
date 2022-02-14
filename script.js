@@ -22,7 +22,7 @@ html {
 }
 
 /*
-    接下来，我们来让代码高亮吧！
+接下来，我们来让代码高亮吧！
 */
 
 .token.comment {
@@ -46,60 +46,109 @@ html {
 }
 
 /* 
-  或许？我们还可以加点 3D 效果
+或许？我们还可以加点 3D 效果
 */
 
 #code {
   transform:rotate(360deg);
 }
+
+/* 
+接下来，我需要一张白纸。
+*/
+#code{
+  position:fixed;
+  left:0;
+  width:50%;
+  height:100%;
+}
+
 `;
-var n = 0;
-var timeID = setInterval(() => {
-  n += 1;
-  // code为id为code的pre标签
-  code.innerHTML = result.substring(0, n);
-  code.innerHTML = Prism.highlight(code.innerHTML, Prism.languages.css, 'css');
-  // styleTag为<style>标签
-  styleTag.innerHTML = result.substring(0, n);
-  if (n >= result.length) {
-    clearInterval(timeID);
-    fn2();
-    fn3(result);
-  }
-}, 10);
 
-// 创建一张白纸
-var fn2 = () => {
-  var paper = document.createElement('div');
-  paper.id = 'paper';
-  document.body.appendChild(paper);
-};
-
-var fn3 = (preResult) => {
-  var result2 = `
+var result2 = `
 #paper{
-  height:100px;
-  background:red;
+  position:fixed;
+  right:0;
+  width:50%;
+  height:100%;
+  background:yellow;
+  padding:10px;
+}
+
+#paper > .content{
+  height:100%;
+  border:10px solid red;
 }
 `;
 
-  var n = 0;
-  var timeID = setInterval(() => {
+var md = `
+  # 标题1
+  # markdown 转 html 库 
+  # marked.js 
+  # github.com 去搜
+`;
+
+// 封装函数，把code写进#code和style标签里
+var writeCode = (prefix, code, fnn) => {
+  let domCode = document.querySelector('#code');
+  domCode.innerHTML = prefix || '';
+  let n = 0;
+  let timeID = setInterval(() => {
     n += 1;
     // code为id为code的pre标签
-    code.innerHTML = preResult + result2.substring(0, n);
-    code.innerHTML = Prism.highlight(
-      code.innerHTML,
+    domCode.innerHTML = Prism.highlight(
+      prefix + code.substring(0, n),
       Prism.languages.css,
       'css'
     );
-    // styleTag为 < style > 标签;
-    styleTag.innerHTML += result2[n - 1];
-    if (n >= result2.length) {
+    // styleTag为<style>标签
+    styleTag.innerHTML = prefix + code.substring(0, n);
+
+    // 解决代码看不见的bug
+    domCode.scrollTop = domCode.scrollHeight;
+    if (n >= code.length) {
       clearInterval(timeID);
+      fnn();
     }
   }, 10);
 };
 
-// 封装函数，把code写进#code和style标签里
-var writeCode = (code) => {};
+var writeMD = (markdown, fn) => {
+  let domContent = document.querySelector('#paper>.content');
+  let n = 0;
+  let timeID = setInterval(() => {
+    n += 1;
+    domContent.innerHTML = Prism.highlight(
+      markdown.substring(0, n),
+      Prism.languages.css,
+      'markdown'
+    );
+    // 解决代码看不见的bug
+    domContent.scrollTop = domContent.scrollHeight;
+    if (n >= markdown.length) {
+      clearInterval(timeID);
+      fn();
+    }
+  }, 10);
+};
+
+// 创建一张白纸
+var createPaper = (fn) => {
+  var paper = document.createElement('div');
+  paper.id = 'paper';
+  document.body.appendChild(paper);
+  var content = document.createElement('div');
+  content.className = 'content';
+  paper.appendChild(content);
+  fn();
+};
+
+writeCode('', result, () => {
+  createPaper(() => {
+    writeCode(result, result2, () => {
+      writeMD(md, () => {
+        console.log('markdown 写完了');
+      });
+    });
+  });
+});
