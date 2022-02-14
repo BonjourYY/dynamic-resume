@@ -137,7 +137,7 @@ var createPaper = (fn) => {
   var paper = document.createElement('div');
   paper.id = 'paper';
   document.body.appendChild(paper);
-  var content = document.createElement('div');
+  var content = document.createElement('pre');
   content.className = 'content';
   paper.appendChild(content);
   fn();
