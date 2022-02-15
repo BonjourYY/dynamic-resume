@@ -82,10 +82,15 @@ var result2 = `
 `;
 
 var md = `
-  # 标题1
-  # markdown 转 html 库 
-  # marked.js 
-  # github.com 去搜
+  # 个人简历
+  Mr.fan 江苏常州 前端开发
+  
+  # 项目介绍
+  ## 自制导航
+  ## 原生JS轮播图
+  ## 动态简历
+
+  
 `;
 
 // 封装函数，把code写进#code和style标签里
@@ -118,11 +123,7 @@ var writeMD = (markdown, fn) => {
   let n = 0;
   let timeID = setInterval(() => {
     n += 1;
-    domContent.innerHTML = Prism.highlight(
-      markdown.substring(0, n),
-      Prism.languages.css,
-      'markdown'
-    );
+    domContent.innerHTML = marked.parse(markdown.substring(0, n));
     // 解决代码看不见的bug
     domContent.scrollTop = domContent.scrollHeight;
     if (n >= markdown.length) {

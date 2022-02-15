@@ -12,7 +12,16 @@
   color: #000;
 }
 
-#code {
+#code,
+#paper .content {
   height: 100vh;
-  overflow: hidden;
+  overflow: auto;
+}
+
+h1 {
+  color: red;
+}
+
+h1::before {
+  content: '#';
 }
